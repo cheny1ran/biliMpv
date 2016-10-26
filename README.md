@@ -1,6 +1,6 @@
 # biliMpv  
-
 > 暂不支持python3  
+
 使用本地的mpv播放器在线观看bilibili视频  
 
 #### 依赖：  
