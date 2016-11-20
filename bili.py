@@ -12,13 +12,13 @@ import os
 
 biliUrl = 'http://www.bilibili.com/video/av{av}'
 ifUrl = 'http://interface.bilibili.com/playurl?&cid={cid}&from=miniplay&player=1&sign={sign}'
-pattern = re.compile(r'http:/[a-z0-9A-Z_\.?=&/-]+&rate=0')
-headers = {
-    # 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+pattern = re.compile(r'http:/[a-z0-9A-Z_\.?=&/-]+&rate=\d+')
+hdrs = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
     # 'Accept-Encoding': 'gzip, deflate, sdch',
-    # 'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.6,en;q=0.4',
-    # 'Cache-Control': 'no-cache',
-    # 'Connection': 'keep-alive',
+    'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.6,en;q=0.4',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
     # 'Host': 'www.bilibili.com',
     # 'Pragma': 'no-cache',
     # 'Upgrade-Insecure-Requests': '1',
@@ -46,7 +46,7 @@ class bilivideo:
         url = biliUrl.format(av = self.av)
         print url
         try:
-            request = urllib2.Request(url, headers = headers)
+            request = urllib2.Request(url, headers = hdrs)
             response = urllib2.urlopen(request)
             text = ''
             if response.info().get('Content-Encoding') == 'gzip': 
@@ -71,7 +71,7 @@ class bilivideo:
         url = ifUrl.format(cid = self.cid, secretkey = self.secretkey, sign = self.getSign())
         print url
         try:
-            request = urllib2.Request(url)
+            request = urllib2.Request(url, headers = hdrs)
             response = urllib2.urlopen(request)
             text = response.read()
             rst = pattern.findall(text)
@@ -85,7 +85,7 @@ class bilivideo:
     def play_video(self):
         url = self.getFlv()
         print url
-        if url != -1:
+        if url is not None:
             cmd = 'mpv \'' + url + '\''
             os.system(cmd)
 
